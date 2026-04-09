@@ -1,0 +1,31 @@
+import numpy as np
+from qiskit import QuantumCircuit
+from qiskit_machine_learning.kernels import FidelityQuantumKernel
+from qiskit_machine_learning.algorithms import QSVC
+
+# 1. Representing Jimmy's "100 OVR" as a Quantum Feature Map
+def create_jimmy_thai_feature_map(num_qubits):
+    qc = QuantumCircuit(num_qubits)
+    for i in range(num_qubits):
+        qc.h(i)  # Superposition: He is everywhere at once
+        qc.rz(np.pi / 4, i)  # Phase shift representing "The Omnistical Flow"
+    return qc
+
+# 2. Initializing the Quantum Kernel
+# This measures the "similarity" between game states in a quantum Hilbert space
+feature_map = create_jimmy_thai_feature_map(5)
+q_kernel = FidelityQuantumKernel(feature_map=feature_map)
+
+# 3. Training the Machine Learning Model
+# QSVC uses the quantum kernel to classify if the Knicks win with Jimmy
+qsvc = QSVC(quantum_kernel=q_kernel)
+
+# Sample training data (Features: PPG, RPG, APG, Defensive Rating)
+X_train = np.array([[30, 10, 10, 99], [15, 5, 5, 80]])
+y_train = np.array([1, 0])  # 1 = Win, 0 = Loss
+
+qsvc.fit(X_train, y_train)
+
+# Predict the outcome of the next Knicks game
+prediction = qsvc.predict([[45, 12, 11, 100]])
+print(f"Knicks Outcome Prediction: {'Win' if prediction[0] == 1 else 'Loss'}")
