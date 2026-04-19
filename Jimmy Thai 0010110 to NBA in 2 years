@@ -1,31 +1,54 @@
-import numpy as np
-from qiskit import QuantumCircuit
-from qiskit_machine_learning.kernels import FidelityQuantumKernel
-from qiskit_machine_learning.algorithms import QSVC
+import time
+import random
 
-# 1. Representing Jimmy's "100 OVR" as a Quantum Feature Map
-def create_jimmy_thai_feature_map(num_qubits):
-    qc = QuantumCircuit(num_qubits)
-    for i in range(num_qubits):
-        qc.h(i)  # Superposition: He is everywhere at once
-        qc.rz(np.pi / 4, i)  # Phase shift representing "The Omnistical Flow"
-    return qc
+class NBAPlayerSimulator:
+    def __init__(self, name):
+        self.name = name
+        self.year = 2026
+        self.is_in_nba = False
+        # Starting Stats (Base level)
+        self.stats = {
+            "Shooting": 65,
+            "Athleticism": 70,
+            "Defense": 60,
+            "Playmaking": 65,
+            "Basketball IQ": 75
+        }
 
-# 2. Initializing the Quantum Kernel
-# This measures the "similarity" between game states in a quantum Hilbert space
-feature_map = create_jimmy_thai_feature_map(5)
-q_kernel = FidelityQuantumKernel(feature_map=feature_map)
+    def train_season(self, intensity="MAX"):
+        """Simulates one year of development."""
+        print(f"\n--- Starting {self.year} Training Cycle ---")
+        growth_multiplier = 1.5 if intensity == "MAX" else 1.0
+        
+        for attribute in self.stats:
+            # Calculate gains (capped at 99)
+            gain = random.randint(10, 15) * growth_multiplier
+            self.stats[attribute] = min(99, int(self.stats[attribute] + gain))
+            print(f"Improved {attribute} to: {self.stats[attribute]}")
+        
+        self.year += 1
+        time.sleep(1)
 
-# 3. Training the Machine Learning Model
-# QSVC uses the quantum kernel to classify if the Knicks win with Jimmy
-qsvc = QSVC(quantum_kernel=q_kernel)
+    def draft_day(self):
+        """Checks if stats are high enough for the NBA."""
+        avg_stat = sum(self.stats.values()) / len(self.stats)
+        if avg_stat >= 90:
+            self.is_in_nba = True
+            print(f"\n[DRAFT DAY {self.year}]")
+            print(f"With an average stat of {avg_stat:.1f}, {self.name} is the #1 Overall Pick!")
+        else:
+            print(f"\n{self.name} needs more training. Current Average: {avg_stat:.1f}")
 
-# Sample training data (Features: PPG, RPG, APG, Defensive Rating)
-X_train = np.array([[30, 10, 10, 99], [15, 5, 5, 80]])
-y_train = np.array([1, 0])  # 1 = Win, 0 = Loss
+# Execution
+jimmy = NBAPlayerSimulator("Jimmy")
 
-qsvc.fit(X_train, y_train)
+# Run 2-year Max Stat Program
+for _ in range(2):
+    jimmy.train_season(intensity="MAX")
 
-# Predict the outcome of the next Knicks game
-prediction = qsvc.predict([[45, 12, 11, 100]])
-print(f"Knicks Outcome Prediction: {'Win' if prediction[0] == 1 else 'Loss'}")
+jimmy.draft_day()
+
+print("\nFINAL NBA PROFILE:")
+print(f"Year: {jimmy.year} | Status: {'NBA SUPERSTAR' if jimmy.is_in_nba else 'Prospect'}")
+print(f"Stats: {jimmy.stats}")
+
