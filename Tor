@@ -1,0 +1,20 @@
+import requests
+
+# Standard connection
+def get_ip():
+    return requests.get('https://api.ipify.org').text
+
+print(f"Original IP: {get_ip()}")
+
+# Tor Configuration
+proxies = {
+    'http': 'socks5h://127.0.0.1:9050',
+    'https': 'socks5h://127.0.0.1:9050'
+}
+
+try:
+    # Connection through Tor
+    tor_ip = requests.get('https://api.ipify.org', proxies=proxies).text
+    print(f"Tor IP: {tor_ip}")
+except Exception as e:
+    print("Check if the Tor service is running!")
