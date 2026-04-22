@@ -52,3 +52,26 @@ print("\nFINAL NBA PROFILE:")
 print(f"Year: {jimmy.year} | Status: {'NBA SUPERSTAR' if jimmy.is_in_nba else 'Prospect'}")
 print(f"Stats: {jimmy.stats}")
 
+import pandas as pd
+
+# Creating a mock dataset of NBA Stars for 2026
+data = {
+    'Player': ['Victor Wembanyama', 'Chet Holmgren', 'Nikola Jokic', 'Giannis Antetokounmpo'],
+    'Strength': [57, 52, 92, 91],
+    'Height_Inches': [89, 85, 83, 83]
+}
+
+df = pd.DataFrame(data)
+
+# Apply the 50% strength increase to Wemby
+# We use .loc to target the specific player and column
+increase_factor = 1.50
+
+df.loc[df['Player'] == 'Victor Wembanyama', 'Strength'] *= increase_factor
+
+# Rounding for a clean 2K-style integer rating
+df['Strength'] = df['Strength'].round().astype(int)
+
+print("Updated 2026 Player Stats:")
+print(df)
+
